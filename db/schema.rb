@@ -10,19 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_25_125059) do
+ActiveRecord::Schema.define(version: 2019_04_21_211602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "goals", force: :cascade do |t|
-    t.string "title"
-    t.bigint "goal_id"
+  create_table "objectives", force: :cascade do |t|
     t.bigint "user_id"
+    t.bigint "team_id"
+    t.bigint "objective_id"
+    t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["goal_id"], name: "index_goals_on_goal_id"
-    t.index ["user_id"], name: "index_goals_on_user_id"
+    t.index ["objective_id"], name: "index_objectives_on_objective_id"
+    t.index ["team_id"], name: "index_objectives_on_team_id"
+    t.index ["user_id"], name: "index_objectives_on_user_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -33,10 +41,24 @@ ActiveRecord::Schema.define(version: 2019_03_25_125059) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "firstname"
+    t.string "lastname"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "goals", "goals"
-  add_foreign_key "goals", "users"
+  create_table "users_teams", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "team_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_users_teams_on_team_id"
+    t.index ["user_id"], name: "index_users_teams_on_user_id"
+  end
+
+  add_foreign_key "objectives", "objectives"
+  add_foreign_key "objectives", "teams"
+  add_foreign_key "objectives", "users"
+  add_foreign_key "users_teams", "teams"
+  add_foreign_key "users_teams", "users"
 end
